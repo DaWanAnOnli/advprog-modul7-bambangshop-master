@@ -65,7 +65,7 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [ ] Commit: `Implement unsubscribe function in Notification controller.`
     -   [ ] Write answers of your learning module's "Reflection Publisher-2" questions in this README.
 -   **STAGE 3: Implement notification mechanism**
-    -   [ ] Commit: `Implement update method in Subscriber model to send notification HTTP requests.`
+    -   [] Commit: `Implement update method in Subscriber model to send notification HTTP requests.`
     -   [ ] Commit: `Implement notify function in Notification service to notify each Subscriber.`
     -   [ ] Commit: `Implement publish function in Program service and Program controller.`
     -   [ ] Commit: `Edit Product service methods to call notify after create/delete.`
@@ -77,6 +77,13 @@ This is the place for you to write reflections:
 ### Mandatory (Publisher) Reflections
 
 #### Reflection Publisher-1
+
+1. Menurut saya interface subscriber dibutuhkan bila terdapat beberapa jenis subscriber atau model yang akan menerima notifikasi dari publisher dengan caranya masing-masing. Dalam kasus ini, interface sangat membantu karena publisher tidak perlu mengetahui teknis pemrorsesan notifikasi dari masing-masing jenis penerima notifikasi. Selain itu, ini akan menegakkan prinsip Dependency Inversion karena semua ketergantungan dihandle oleh interface dan bukan concrete class, dan Prinsip Open-Closed karena penambahan jenis penerima notifikasi tidak perlu mengutak-atik interface Subscriber yang sudah ada. Di sisi lain, jika dapat dipastikan bahwa subscriber adalah satu-satunya penerima informasi dari publisher, maka menurut saya interface tidak terlalu dibutuhkan. Namun, saya tetap merekomendasikan menggunakan interface untuk menjunjung tinggi best practice dan mengantisipasi penambahan fitur di waktu yang akan datang.
+
+2. Untuk penggunaan Vec saya rasa sudah cukup (sufficient), karena dalam konteks ini Vec digunakan untuk menyimpan semua product atau subscriber yang ada sebagai return value dari function listAll(). Namun jika diperlukan operasi-operasi pada beberapa instance dalam list tersebut, terutama jika menggunakan id, mungkin eksekusinya kurang efisien (O(n)), karena harus traverse masing-masing instance sampai mendapatkan instance yang diinginkan. Jika demikian, maka mungkin lebih baik menggunakan DashMap, agar pencarian memakan waktu O(1). Untuk penggunaan DashMap sebagai struktur data utama pada repository saya merasa ini tidak necessary, karena penggunakan Vec (list) sudah cukup untuk menyimpan data yang ada. Namun DashMap ada untungnya, yaitu sangat efisien untuk dilakukan searching atau pencarian berdasarkan key yang ditentukan. Jika akan banyak melakukan searching atau get instance, makan DashMap adalah pilihan struktur data yang baik.
+
+3. Menurut saya penggunaan Singleton Pattern dapat dikolaborasikan dengan penggunaan DashMap. DashMap diperlukan agar Map dapat diakses dan diupdate oleh beberapa thread sekaligus tanpa harus memperhatikan isu sinkronisasi. Sementara itu Singleton Pattern memastikan hanya ada satu instance SUBSCRIBERS yang ada. Kesimpulannya, jika kita tahu program kita tidak akan menggunakan multiple threads, DashMap tidak perlu digunakan. Namun jika akan dilakukan multiple threading, maka DashMap perlu digunakan. Untuk Singleton Pattern menurut saya lebih baik jika tetap digunakan dalam kasus apapun, untuk menjaga-jaga agar tidak ada lebih dari satu instance SUBSCRIBER di setiap waktu.
+
 
 #### Reflection Publisher-2
 
